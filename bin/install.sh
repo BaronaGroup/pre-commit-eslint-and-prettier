@@ -5,7 +5,7 @@ then
   exit 1
 fi
 
-npm i -D prettier BaronaGroup/barona-style-server import-sort-style-module prettier-plugin-import-sort pre-commit
+npm i -D prettier 'BaronaGroup/barona-style-server#dist' import-sort-style-module prettier-plugin-import-sort pre-commit
 if ! [ -e .prettierrc ]
 then
     cp node_modules/barona-style-server/.prettierrc .
