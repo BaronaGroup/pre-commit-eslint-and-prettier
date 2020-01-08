@@ -2,7 +2,6 @@
   "name": "barona-style-server",
   "version": "0.0.1",
   "scripts": {
-    "postinstall": "npm run build",
     "build": "tsc --project tsconfig.json",
     "prettier": "find src -name '*.js' -or -name '*.jsx' -or -name '*.ts' -or -name '*.tsx' | xargs prettier --write"
   },
