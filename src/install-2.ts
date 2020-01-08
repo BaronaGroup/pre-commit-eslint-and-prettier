@@ -1,5 +1,7 @@
-const cp = require('child_process')
-const packageJSON = require(process.cwd() + '/package.json')
+import * as fs from 'fs'
+
+const packageFilename = process.cwd() + '/package.json'
+const packageJSON = require(packageFilename)
 
 if (!packageJSON['pre-commit']) packageJSON['pre-commit'] = []
 const preCommit = packageJSON['pre-commit'] as string[]
@@ -19,3 +21,5 @@ packageJSON.importSort = {
     parser: 'typescript',
   },
 }
+
+fs.writeFileSync(packageFilename, JSON.stringify(packageJSON, null, 2), 'utf8')

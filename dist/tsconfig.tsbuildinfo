@@ -110,8 +110,8 @@
         "signature": "0c9ea8c2028047f39a3f66752682604f543c08be8806258c3d95c93e75a43255"
       },
       "../src/install-2.ts": {
-        "version": "8c2410ed15a82ac893b94cc8f2f23fd1d8d8bff21d2ef895bed3a1931c38e199",
-        "signature": "3e795eb7627b23df832afdd9fb764b1a390657d3ebd5f67ff0f374a48a38ce94"
+        "version": "96e440f8c49370709f4b7e868ce4ede37610b3299249e41380f03279ef752d68",
+        "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../node_modules/@types/node/globals.d.ts": {
         "version": "9a52fe500e1e0ed7362ae65094ec6d4f655033d21f873886211e252fc9c5b9c8",
@@ -2242,7 +2242,6 @@
       "../node_modules/typescript/lib/lib.es2018.regexp.d.ts",
       "../node_modules/typescript/lib/lib.esnext.intl.d.ts",
       "../node_modules/typescript/lib/lib.esnext.bigint.d.ts",
-      "../src/install-2.ts",
       "../node_modules/@types/node/globals.d.ts",
       "../node_modules/@types/node/assert.d.ts",
       "../node_modules/@types/node/async_hooks.d.ts",
@@ -2311,6 +2310,7 @@
       "../node_modules/@types/lodash/ts3.1/common/util.d.ts",
       "../node_modules/@types/lodash/ts3.1/index.d.ts",
       "../node_modules/@types/lodash/ts3.1/memoize.d.ts",
+      "../src/style-server.ts",
       "../node_modules/@types/eslint/ts3.1/helpers.d.ts",
       "../node_modules/@types/json-schema/index.d.ts",
       "../node_modules/@types/estree/index.d.ts",
@@ -2318,7 +2318,7 @@
       "../node_modules/@types/prettier/index.d.ts",
       "../../../node_modules/@types/strip-bom/index.d.ts",
       "../../../node_modules/@types/strip-json-comments/index.d.ts",
-      "../src/style-server.ts"
+      "../src/install-2.ts"
     ]
   },
   "version": "3.7.4"
