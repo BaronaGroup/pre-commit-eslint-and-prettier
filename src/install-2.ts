@@ -22,4 +22,21 @@ packageJSON.importSort = {
   },
 }
 
+if (!scripts.prettier) {
+  if (fs.existsSync(__dirname + '/tsconfig.json')) {
+    const tsconfig = require(__dirname + '/tsconfig.json')
+    if (tsconfig.include) {
+      const paths = (tsconfig.include as string[])
+        .map(x => x.match(/^[\w/]+/) || [''])
+        .map(x => x[0])
+        .filter(x => x)
+        .map(x => (x.endsWith('/') ? x.substring(0, x.length - 1) : x))
+      if (paths.length) {
+        const pathStr = paths.join(' ')
+        scripts.prettier = `find ${pathStr} -name '*.js' -or -name '*.jsx' -or -name '*.ts' -or -name '*.tsx' | xargs prettier --write`
+      }
+    }
+  }
+}
+
 fs.writeFileSync(packageFilename, JSON.stringify(packageJSON, null, 2), 'utf8')

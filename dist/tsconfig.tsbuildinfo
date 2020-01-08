@@ -110,7 +110,7 @@
         "signature": "0c9ea8c2028047f39a3f66752682604f543c08be8806258c3d95c93e75a43255"
       },
       "../src/install-2.ts": {
-        "version": "96e440f8c49370709f4b7e868ce4ede37610b3299249e41380f03279ef752d68",
+        "version": "d5b497eac1ede466d3fd1af94bc3d3e4a900c62dd2e4da5de1f8101292bd5013",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
       },
       "../node_modules/@types/node/globals.d.ts": {
