@@ -6,7 +6,7 @@
     "prettier": "find src -name '*.js' -or -name '*.jsx' -or -name '*.ts' -or -name '*.tsx' | xargs prettier --write"
   },
   "bin": {
-    "barona-style-server": "dist/style-server.js"
+    "barona-style-server": "./dist/style-server.js"
   },
   "devDependencies": {
     "@types/eslint": "6.1.3",
