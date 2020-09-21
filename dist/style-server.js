@@ -13,7 +13,7 @@ const memoize_1 = __importDefault(require("lodash/memoize"));
 const log = karhu_1.context('style-server');
 const app = express_1.default();
 const port = +(process.env.BSS_PORT || process.env.PORT || '15077');
-app.use(body_parser_1.default.text());
+app.use(body_parser_1.default.text({ limit: 1024 * 1024 * 10 }));
 let lastRequest = new Date();
 const getCliEngine = memoize_1.default(dir => {
     const cwd = process.cwd();

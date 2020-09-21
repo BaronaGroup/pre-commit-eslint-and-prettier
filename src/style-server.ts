@@ -13,7 +13,7 @@ const log = karhuContext('style-server')
 const app = express()
 const port = +(process.env.BSS_PORT || process.env.PORT || '15077')
 
-app.use(bodyParser.text())
+app.use(bodyParser.text({limit: 1024 * 1024 * 10}))
 
 let lastRequest = new Date()
 
