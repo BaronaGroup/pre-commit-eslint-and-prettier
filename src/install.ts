@@ -11,6 +11,7 @@ if (!fs.existsSync(packageFilename)) {
   process.exit(1)
 }
 
+console.log('Installing dependencies')
 if (fullInstall) {
   cp.execSync(`npm i -D prettier ${myPackageName} import-sort-style-module prettier-plugin-import-sort pre-commit`)
   let prettierRc = process.cwd() + '/.prettierrc'
@@ -21,16 +22,20 @@ if (fullInstall) {
   cp.execSync(`npm i -D ${myPackageName} pre-commit`)
 }
 cp.execSync('npm rm barona_style_server')
+
+console.log('Updating package.json')
+
 const packageJSON = require(packageFilename)
 
 if (!packageJSON['pre-commit']) packageJSON['pre-commit'] = []
-const preCommit = (packageJSON['pre-commit'] as string[]).filter(
-  // Remove the old versions of this script
-  entry => entry !== 'bss_start-style-server' && entry !== 'barona_style_server'
-)
+const preCommit = packageJSON['pre-commit'] as string[]
 
-if (!preCommit.includes('bss_start-style-server')) {
-  preCommit.push('barona_style_server')
+// Remove obsolete versions of the script
+preCommit.splice(preCommit.indexOf('bss_start-style-server'), 1)
+preCommit.splice(preCommit.indexOf('barona_style_server'), 1)
+
+if (!preCommit.includes(myPackageName)) {
+  preCommit.push(myPackageName)
 }
 
 if (!packageJSON.scripts) packageJSON.scripts = {}
@@ -67,3 +72,4 @@ if (fullInstall) {
 }
 
 fs.writeFileSync(packageFilename, JSON.stringify(packageJSON, null, 2), 'utf8')
+console.log('Done.')
