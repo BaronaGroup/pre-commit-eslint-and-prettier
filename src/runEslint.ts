@@ -2,12 +2,14 @@ import * as cp from 'child_process'
 import fs from 'fs'
 import path from 'path'
 
+import { identity } from 'lodash'
 import memoize from 'lodash/memoize'
 
 import { applyFix } from './applyFix'
+import { ChildMessage } from './ChildMessage'
 import requireLib from './requireLib'
 
-const getCliEngine = memoize(dir => {
+export const getCliEngine = memoize(dir => {
   const cwd = process.cwd()
   process.chdir(dir)
   const cli = new (requireLib(dir, 'eslint').CLIEngine)({ fix: true })
@@ -46,7 +48,10 @@ export default async function runEslint(filename: string) {
     }
   }
   if (report.errorCount || report.warningCount) {
-    console.log(cli.getFormatter()(report.results))
+    process.send!(
+      identity<ChildMessage>({ cmd: 'eslintResults', results: report.results })
+    )
+
     return false
   } else {
     return true

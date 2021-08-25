@@ -4,31 +4,43 @@ import * as os from 'os'
 import identity from 'lodash/identity'
 import range from 'lodash/range'
 
-import { ChildMessage } from './ChildMessage'
+import { ChildMessage, LintResult } from './ChildMessage'
+import { getCliEngine } from './runEslint'
 
 async function run() {
   let success = true
   const files = getFilesInCommit()
   const maxRunners = Math.min(os.cpus().length, files.length)
+
+  const lintResults: LintResult[] = []
+
   await Promise.all(
     range(0, maxRunners).map(
       () =>
         new Promise(resolve => {
           const child = cp.fork(__dirname + '/child')
           child.on('message', (message: ChildMessage) => {
-            if (message.cmd === 'sendNext') {
-              child.send(
-                identity<ChildMessage>({ cmd: 'next', file: files.shift() ?? null })
-              )
-            } else if (message.cmd === 'fail') {
-              success = false
-            } else if (message.cmd === 'runCommand') {
-              const output = cp.execSync(message.commandline, { input: message.input }).toString('utf-8')
-              child.send(
-                identity<ChildMessage>({ cmd: 'ranCommand', output })
-              )
-            } else {
-              console.error('Cannot handle command ' + message.cmd)
+            switch (message.cmd) {
+              case 'sendNext':
+                child.send(
+                  identity<ChildMessage>({ cmd: 'next', file: files.shift() ?? null })
+                )
+                break
+              case 'fail':
+                success = false
+                break
+              case 'runCommand':
+                const output = cp.execSync(message.commandline, { input: message.input }).toString('utf-8')
+                child.send(
+                  identity<ChildMessage>({ cmd: 'ranCommand', output })
+                )
+                break
+              case 'eslintResults':
+                lintResults.push(...message.results)
+                break
+              default:
+                console.error('Cannot handle command ' + message.cmd)
+                break
             }
           })
           child.on('error', err => {
@@ -49,6 +61,9 @@ async function run() {
         })
     )
   )
+  if (lintResults.length) {
+    console.log(getCliEngine(process.cwd()).getFormatter()(lintResults))
+  }
 
   if (!success) {
     process.exit(21)
