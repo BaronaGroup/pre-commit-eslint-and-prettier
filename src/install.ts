@@ -25,7 +25,7 @@ if (fullInstall) {
 } else {
   cp.execSync(`npm i -D ${myPackageName} pre-commit`, { maxBuffer })
 }
-cp.execSync('npm rm barona_style_server', { maxBuffer })
+cp.execSync('npm rm barona-style-server', { maxBuffer })
 
 console.log('Updating package.json')
 
