@@ -5,6 +5,7 @@ import identity from 'lodash/identity'
 import range from 'lodash/range'
 
 import { ChildMessage, LintResult } from './ChildMessage'
+import { maxBuffer } from './contants'
 import { getCliEngine } from './runEslint'
 
 async function run() {
@@ -30,7 +31,7 @@ async function run() {
                 success = false
                 break
               case 'runCommand':
-                const output = cp.execSync(message.commandline, { input: message.input }).toString('utf-8')
+                const output = cp.execSync(message.commandline, { input: message.input, maxBuffer }).toString('utf-8')
                 child.send(
                   identity<ChildMessage>({ cmd: 'ranCommand', output })
                 )

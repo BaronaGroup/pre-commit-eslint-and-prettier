@@ -2,6 +2,8 @@ import * as cp from 'child_process'
 import * as fs from 'fs'
 import * as process from 'process'
 
+import { maxBuffer } from './contants'
+
 const myPackageName = 'pre-commit-eslint-and-prettier'
 
 const fullInstall = process.argv.includes('--full-install')
@@ -13,15 +15,17 @@ if (!fs.existsSync(packageFilename)) {
 
 console.log('Installing dependencies')
 if (fullInstall) {
-  cp.execSync(`npm i -D prettier ${myPackageName} import-sort-style-module prettier-plugin-import-sort pre-commit`)
+  cp.execSync(`npm i -D prettier ${myPackageName} import-sort-style-module prettier-plugin-import-sort pre-commit`, {
+    maxBuffer,
+  })
   let prettierRc = process.cwd() + '/.prettierrc'
   if (!fs.existsSync(prettierRc)) {
     fs.copyFileSync(__dirname + '/../.prettierrc', prettierRc)
   }
 } else {
-  cp.execSync(`npm i -D ${myPackageName} pre-commit`)
+  cp.execSync(`npm i -D ${myPackageName} pre-commit`, { maxBuffer })
 }
-cp.execSync('npm rm barona_style_server')
+cp.execSync('npm rm barona_style_server', { maxBuffer })
 
 console.log('Updating package.json')
 

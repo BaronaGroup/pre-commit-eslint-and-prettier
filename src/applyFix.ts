@@ -4,6 +4,7 @@ import fs from 'fs'
 import identity from 'lodash/identity'
 
 import { ChildMessage } from './ChildMessage'
+import { maxBuffer } from './contants'
 import { forMessage } from './forMessage'
 import { getTempFile } from './tempfile'
 
@@ -16,7 +17,7 @@ export async function applyFix(contents: string, fixedContents: string, filename
 
   const patch = (
     await new Promise<string>((resolve, reject) =>
-      cp.exec(`git diff --no-index ${commitedTemp} ${prettierTemp}`, (err, stdout, stderr) => {
+      cp.exec(`git diff --no-index ${commitedTemp} ${prettierTemp}`, { maxBuffer }, (err, stdout, stderr) => {
         if (err) {
           if (stdout) return resolve(stdout)
           if (stderr) {

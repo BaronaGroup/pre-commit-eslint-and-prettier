@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import path from 'path'
 
 import { applyFix } from './applyFix'
+import { maxBuffer } from './contants'
 import requireLib from './requireLib'
 
 export default async function preparePrettier() {
@@ -14,7 +15,7 @@ export default async function preparePrettier() {
     if (!filename.match(validFileMatcher)) return
 
     const contents = await new Promise<string>((resolve, reject) =>
-      cp.exec(`git show :${filename}`, (err, stdout) => {
+      cp.exec(`git show :${filename}`, { maxBuffer }, (err, stdout) => {
         if (err) {
           return reject(err)
         } else {

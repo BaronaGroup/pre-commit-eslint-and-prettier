@@ -7,6 +7,7 @@ import memoize from 'lodash/memoize'
 
 import { applyFix } from './applyFix'
 import { ChildMessage } from './ChildMessage'
+import { maxBuffer } from './contants'
 import requireLib from './requireLib'
 
 export const getCliEngine = memoize(dir => {
@@ -23,7 +24,7 @@ export default async function runEslint(filename: string) {
 
   const cli = getCliEngine(path.dirname(path.resolve(process.cwd(), filename)))
   const contents = await new Promise<string>((resolve, reject) =>
-    cp.exec(`git show :${filename}`, (err, stdout) => {
+    cp.exec(`git show :${filename}`, { maxBuffer }, (err, stdout) => {
       if (err) {
         return reject(err)
       } else {
