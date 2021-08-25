@@ -1,6 +1,10 @@
 import cp from 'child_process'
 import fs from 'fs'
 
+import identity from 'lodash/identity'
+
+import { ChildMessage } from './ChildMessage'
+import { forMessage } from './forMessage'
 import { getTempFile } from './tempfile'
 
 export async function applyFix(contents: string, fixedContents: string, filename: string) {
@@ -28,5 +32,8 @@ export async function applyFix(contents: string, fixedContents: string, filename
     .replace(new RegExp(commitedTemp, 'g'), `/${filename}`)
     .replace(new RegExp(prettierTemp, 'g'), `/${filename}`)
 
-  cp.execSync(`git apply --cached`, { input: patch })
+  process.send!(
+    identity<ChildMessage>({ cmd: 'runCommand', commandline: `git apply --cached`, input: patch })
+  )
+  await forMessage('ranCommand')
 }
