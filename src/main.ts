@@ -18,23 +18,19 @@ async function run() {
   await Promise.all(
     range(0, maxRunners).map(
       () =>
-        new Promise(resolve => {
+        new Promise<void>((resolve) => {
           const child = cp.fork(__dirname + '/child')
           child.on('message', (message: ChildMessage) => {
             switch (message.cmd) {
               case 'sendNext':
-                child.send(
-                  identity<ChildMessage>({ cmd: 'next', file: files.shift() ?? null })
-                )
+                child.send(identity<ChildMessage>({ cmd: 'next', file: files.shift() ?? null }))
                 break
               case 'fail':
                 success = false
                 break
               case 'runCommand':
                 const output = cp.execSync(message.commandline, { input: message.input, maxBuffer }).toString('utf-8')
-                child.send(
-                  identity<ChildMessage>({ cmd: 'ranCommand', output })
-                )
+                child.send(identity<ChildMessage>({ cmd: 'ranCommand', output }))
                 break
               case 'eslintResults':
                 lintResults.push(...message.results)
@@ -44,7 +40,7 @@ async function run() {
                 break
             }
           })
-          child.on('error', err => {
+          child.on('error', (err) => {
             console.log('Child error', err)
           })
           child.on('exit', (code, signal) => {
@@ -70,7 +66,7 @@ async function run() {
     process.exit(21)
   }
 }
-run().catch(err => {
+run().catch((err) => {
   console.error(err.stack)
   process.exit(20)
 })
@@ -80,5 +76,5 @@ function getFilesInCommit() {
     .execSync(`git --no-pager diff --diff-filter=d --name-only --cached`)
     .toString('utf-8')
     .split('\n')
-    .filter(x => x)
+    .filter((x) => x)
 }
