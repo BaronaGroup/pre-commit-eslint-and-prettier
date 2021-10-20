@@ -10,10 +10,11 @@ import { ChildMessage } from './ChildMessage'
 import { maxBuffer } from './contants'
 import requireLib from './requireLib'
 
-export const getCliEngine = memoize(dir => {
+export const getCliEngine = memoize((dir) => {
   const cwd = process.cwd()
   process.chdir(dir)
-  const cli = new (requireLib(dir, 'eslint').CLIEngine)({ fix: true })
+  const eslintLib = requireLib(dir, 'eslint')
+  const cli = new (eslintLib.CLIEngine ?? eslintLib.ESLint)({ fix: true })
   process.chdir(cwd)
   return cli
 })
@@ -32,29 +33,47 @@ export default async function runEslint(filename: string) {
       }
     })
   )
-  const report = cli.executeOnText(contents, filename)
+  const report = unifyEslintReport(
+    cli.executeOnText ? cli.executeOnText(contents, filename) : await cli.lintText(contents, { filePath: filename })
+  )
 
-  if (report.results[0].output) {
-    await applyFix(contents, report.results[0].output, filename)
+  if (report.output) {
+    await applyFix(contents, report.output, filename)
 
     // Also fix on disk
     try {
       const diskFile = await fs.promises.readFile(filename, 'utf-8')
-      const report = cli.executeOnText(diskFile, filename)
-      if (report.results[0].output) {
-        await fs.promises.writeFile(filename, report.results[0].output, 'utf-8')
+      const report = unifyEslintReport(
+        cli.executeOnText ? cli.executeOnText(diskFile, filename) : await cli.lintText(diskFile, { filePath: filename })
+      )
+      if (report.output) {
+        await fs.promises.writeFile(filename, report.output, 'utf-8')
       }
     } catch (err) {
       console.warn('Could not make the disk file prettier due to ', err.stack)
     }
   }
   if (report.errorCount || report.warningCount) {
-    process.send!(
-      identity<ChildMessage>({ cmd: 'eslintResults', results: report.results })
-    )
+    process.send!(identity<ChildMessage>({ cmd: 'eslintResults', results: [report as any] }))
 
     return false
   } else {
     return true
+  }
+}
+
+function unifyEslintReport(
+  report:
+    | Array<{ errorCount: number; warningCount: number; output?: string }>
+    | { errorCount: number; warningCount: number; results: Array<{ output?: string }> }
+) {
+  if (Array.isArray(report)) {
+    return report[0]
+  } else {
+    return {
+      ...report.results[0],
+      errorCount: report.errorCount,
+      warningCount: report.warningCount,
+    }
   }
 }

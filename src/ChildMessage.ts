@@ -1,6 +1,6 @@
 import { CLIEngine } from 'eslint'
 
-export type LintResult = ReturnType<CLIEngine['executeOnText']>['results']
+export type LintResult = ReturnType<CLIEngine['executeOnText']>['results'][number]
 
 export type ChildMessage =
   | { cmd: 'sendNext' }

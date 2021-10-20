@@ -59,7 +59,13 @@ async function run() {
     )
   )
   if (lintResults.length) {
-    console.log(getCliEngine(process.cwd()).getFormatter()(lintResults))
+    let eslintCli = getCliEngine(process.cwd())
+    if (eslintCli.getFormatter) {
+      console.log(eslintCli.getFormatter()(lintResults))
+    } else {
+      const formatter = await eslintCli.loadFormatter()
+      console.log(formatter.format(lintResults))
+    }
   }
 
   if (!success) {
