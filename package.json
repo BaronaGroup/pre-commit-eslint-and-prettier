@@ -1,6 +1,6 @@
 {
   "name": "pre-commit-eslint-and-prettier",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0",
   "description": "Runs prettier and eslint on anything being committed.",
   "homepage": "https://github.com/BaronaGroup/pre-commit-eslint-and-prettier",
   "repository": {
