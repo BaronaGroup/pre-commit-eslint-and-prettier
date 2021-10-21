@@ -68,6 +68,9 @@ function unifyEslintReport(
     | { errorCount: number; warningCount: number; results: Array<{ output?: string }> }
 ) {
   if (Array.isArray(report)) {
+    if (!report.length) {
+      return { errorCount: 0, warningCount: 0 }
+    }
     return report[0]
   } else {
     return {
